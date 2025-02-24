@@ -13,8 +13,33 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+import { useState } from "react";
 
 export default function Home() {
+  const [session,setSession]=useState(25);
+  const [breaks,setBreaks]=useState(5);
+
+  function click(e){
+    const target = e.target.parentElement.id;
+    switch(target){
+      case "break-increment":
+        setBreaks(breaks+1);
+        break;
+      case "break-decrement":
+        setBreaks(breaks-1);
+        break;
+      case "session-increment":
+        setSession(session+1);
+        break;
+      case "session-decrement":
+        setSession(session-1);
+        break;
+      case "reset":
+        setSession(25);
+        setBreaks(5);
+        break;
+    }
+  }
   return (
     <div className="main">
       <p className="title">25+5 Clock</p>
@@ -22,13 +47,13 @@ export default function Home() {
         <p className="header" id="break-label">
           Break Length
         </p>
-        <button className="arrow" id="break-decrement">
+        <button className="arrow" id="break-decrement" onClick={(e)=>{click(e)}}>
           <FiChevronDown />
         </button>
         <p className="display" id="break-length">
-          5
+          {breaks}
         </p>
-        <button className="arrow" id="break-increment">
+        <button className="arrow" id="break-increment" onClick={(e)=>{click(e)}}>
           <FiChevronUp />
         </button>
       </div>
@@ -36,25 +61,25 @@ export default function Home() {
         <p className="header" id="session-label">
           Session Length
         </p>
-        <button className="arrow" id="session-decrement">
+        <button className="arrow" id="session-decrement" onClick={(e)=>{click(e)}}>
           <FiChevronDown />
         </button>
         <p className="display" id="session-length">
-          25
+          {session}
         </p>
-        <button className="arrow" id="session-increment">
+        <button className="arrow" id="session-increment" onClick={(e)=>{click(e)}}>
           <FiChevronUp />
         </button>
       </div>
       <div className="session">
         <p id="timer-label">Session</p>
-        <p id="time-left">25:00</p>
+        <p id="time-left">{session}</p>
       </div>
       <div className="buttons">
-        <button className="control" id="start_stop">
+        <button className="control" id="start_stop" onClick={(e)=>{click(e)}}>
           <PiPlayPauseBold />
         </button>
-        <button className="control" id="reset">
+        <button className="control" id="reset" onClick={(e)=>{click(e)}}>
           <RiRestartLine />
         </button>
       </div>
