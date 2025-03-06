@@ -78,6 +78,7 @@ button{
   align-items: center;
   justify-content: center;
 }
+
 .buttons{
   display:flex;
 }
@@ -112,6 +113,7 @@ button{
   align-items: center;
   font-size: 20px;
   align-content: center;
+  text-align: center;
   
 }
 .display{
