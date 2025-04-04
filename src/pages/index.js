@@ -13,42 +13,57 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-import { useState } from "react";
+import { useState,useRef } from "react";
+import Countdown from "./countdown";
+import Button from "./button";
 
 export default function Home() {
-  const [session, setSession] = useState(25);
-  const [breaks, setBreaks] = useState(5);
-
+  const [session, setSession] = useState(25);//session time
+  const [breaks, setBreaks] = useState(5);//break time
+  const [timerStart, setTimerStart] = useState(false); //used to prevent arrow presses while timer active
+  const [timer, setTimer] = useState(null);//display timer
+  const [display,setDisplay]=useState(false);//are we on session or break,, false==session
+  const minutes = useRef(null);//timer minutes
+  const seconds = useRef(null);//timer seconds
   function click(e) {
-    const target =e.target.closest("button").id ;
+    const target = e.target.closest("button").id;
     switch (target) {
       case "break-increment":
         if (breaks === 60) {
           break;
         }
-        setBreaks(breaks + 1);
+        !timerStart && setBreaks(breaks + 1); //!timerstart && to prevent arrow presses while timer active
         break;
       case "break-decrement":
         if (breaks === 1) {
           break;
         }
-        setBreaks(breaks - 1);
+        !timerStart && setBreaks(breaks - 1);
         break;
       case "session-increment":
         if (session === 60) {
           break;
         }
-        setSession(session + 1);
+        !timerStart && setSession(session + 1);
         break;
       case "session-decrement":
         if (session === 1) {
           break;
         }
-        setSession(session - 1);
+        !timerStart && setSession(session - 1);
         break;
       case "reset":
         setSession(25);
         setBreaks(5);
+        minutes.current = null;
+        seconds.current = null;
+        setTimer(null);
+        setTimerStart(false);
+        setDisplay(false)
+
+        break;
+      case "start_stop":
+        setTimerStart(!timerStart);
         break;
     }
   }
@@ -59,77 +74,69 @@ export default function Home() {
         <p className="header" id="break-label">
           Break Length
         </p>
-        <button
-          className="arrow"
+        <Button
           id="break-decrement"
-          onClick={(e) => {
-            click(e);
-          }}
-        >
-          <FaArrowDown />
-        </button>
+          className="arrow"
+          onClick={click}
+          children=<FaArrowDown />
+        />
         <p className="display" id="break-length">
           {breaks}
         </p>
-        <button
-          className="arrow"
+        <Button
           id="break-increment"
-          onClick={(e) => {
-            click(e);
-          }}
-        >
-          <FaArrowUp />
-        </button>
+          className="arrow"
+          onClick={click}
+          children=<FaArrowUp />
+        />
       </div>
       <div className="chunk2" id="session">
         <p className="header" id="session-label">
           Session Length
         </p>
-        <button
-          className="arrow"
+        <Button
           id="session-decrement"
-          onClick={(e) => {
-            click(e);
-          }}
-        >
-          <FaArrowDown />
-        </button>
+          className="arrow"
+          onClick={click}
+          children=<FaArrowDown />
+        />
         <p className="display" id="session-length">
           {session}
         </p>
-        <button
-          className="arrow"
+        <Button
           id="session-increment"
-          onClick={(e) => {
-            click(e);
-          }}
-        >
-          <FaArrowUp />
-        </button>
+          className="arrow"
+          onClick={click}
+          children=<FaArrowUp />
+        />
       </div>
       <div className="session">
-        <p id="timer-label">Session</p>
-        <p id="time-left">{session}:00</p>
+        <p id="timer-label">{!display?'Session':'Break'}</p>
+        <Countdown
+          minutes={minutes}
+          seconds={seconds}
+          breaks={breaks}
+          session={session}
+          timerRun={timerStart}
+          timer={timer}
+          setTimer={setTimer}
+          display={display}
+          setDisplay={setDisplay}
+        />
       </div>
       <div className="buttons">
-        <button
-          className="control"
+        <Button
           id="start_stop"
-          onClick={(e) => {
-            click(e);
-          }}
-        >
-          <HiMiniPlayPause />
-        </button>
-        <button
           className="control"
+          children=<HiMiniPlayPause />
+          onClick={click}
+        />
+        <Button
           id="reset"
-          onClick={(e) => {
-            click(e);
-          }}
-        >
-          <GrPowerReset />
-        </button>
+          className="control"
+          children=<GrPowerReset />
+          onClick={click}
+        />
       </div>
     </div>
   );
