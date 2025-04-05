@@ -34,13 +34,17 @@ export default function Countdown({
 
         seconds.current = seconds.current - 1;
         setTimer(
-          `${minutes.current}:${
+          `${
+            minutes.current.toString().length <= 1
+              ? "0" + minutes.current
+              : minutes.current
+          }:${
             seconds.current.toString().length <= 1
-              ? '0' + seconds.current
+              ? "0" + seconds.current
               : seconds.current
           }`
         );
-      }, 100);
+      }, 1000);
       return () => {
         if (interval) {
           clearInterval(interval);
